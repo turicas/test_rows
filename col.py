@@ -16,10 +16,6 @@
 # Example:
 #     ./col.py Okapia --output=okapia.csv
 
-import json
-
-from io import BytesIO
-
 import requests
 import rows
 import rows.utils
@@ -36,16 +32,12 @@ def search_species(name):
     if 'error_message' in json_result and \
             json_result['error_message'].strip() != '':
         raise RuntimeError(json_result['error_message'])
-
-    # Need to dump again to JSON (to get a `bytes` object) and then import as
-    # JSON, since there is a little bug on rows
-    json_rows = json.dumps(json_result['results'])
-    return rows.import_from_json(BytesIO(json_rows))
+    
+    return rows.import_from_dicts(json_result['results'])
 
 
 if __name__ == '__main__':
     import argparse
-
 
     parser = argparse.ArgumentParser()
     parser.add_argument('species_name')
